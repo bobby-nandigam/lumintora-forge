@@ -1,0 +1,6 @@
+name = "lumintora-frontend"
+pages_build_output_dir = "dist"
+compatibility_date = "2024-09-23"
+
+[env.production.vars]
+VITE_API_URL = "https://lumintora-api.onrender.com"

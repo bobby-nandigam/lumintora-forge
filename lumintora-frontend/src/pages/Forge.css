@@ -1,0 +1,162 @@
+/* Lumintora Forge — adaptive refresh UI. Reuses the app's design tokens
+   (--bg, --accent, --text, --green/amber/rose) so it themes automatically. */
+
+.forge-hero-line {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 4px 0 6px;
+}
+.forge-sub { color: var(--text-2); font-size: 15px; max-width: 620px; }
+
+/* Three primary modes */
+.forge-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0 32px; }
+@media (max-width: 760px) { .forge-modes { grid-template-columns: 1fr; } }
+.forge-mode {
+  position: relative; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg-1);
+  border-radius: var(--radius-lg); padding: 20px; transition: var(--transition);
+  display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+}
+.forge-mode:hover { border-color: var(--accent-border); box-shadow: var(--shadow); transform: translateY(-2px); }
+.forge-mode.primary { background: var(--grad-deep); border-color: transparent; color: #fff; }
+.forge-mode.primary .forge-mode-desc, .forge-mode.primary .forge-mode-kicker { color: rgba(255,255,255,0.82); }
+.forge-mode-ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent-ink); }
+.forge-mode.primary .forge-mode-ico { background: rgba(255,255,255,0.18); color: #fff; }
+.forge-mode-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); font-weight: 600; }
+.forge-mode-title { font-size: 18px; font-weight: 700; }
+.forge-mode-desc { font-size: 13px; color: var(--text-2); line-height: 1.45; }
+.forge-mode-go { margin-top: auto; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+
+/* Section header */
+.forge-sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 30px 0 14px; }
+.forge-sec-title { font-family: var(--font-display); font-size: 19px; font-weight: 700; }
+.forge-sec-hint { font-size: 12px; color: var(--text-3); }
+
+/* Engineering memory */
+.forge-memory { display: flex; flex-direction: column; gap: 2px; }
+.mem-row {
+  display: grid; grid-template-columns: 150px 1fr 54px auto; align-items: center; gap: 14px;
+  padding: 11px 12px; border-radius: var(--radius); cursor: pointer; transition: var(--transition);
+}
+.mem-row:hover { background: var(--bg-2); }
+.mem-name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+.mem-bar { height: 8px; border-radius: 100px; background: var(--bg-3); overflow: hidden; }
+.mem-bar > i { display: block; height: 100%; border-radius: 100px; }
+.mem-pct { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 14px; }
+.mem-flag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px;
+  background: var(--amber-soft); color: var(--amber); white-space: nowrap; }
+@media (max-width: 640px) {
+  .mem-row { grid-template-columns: 110px 1fr 44px; }
+  .mem-flag { display: none; }
+}
+
+/* Recommendation cards */
+.forge-recs { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+@media (max-width: 900px) { .forge-recs { grid-template-columns: 1fr; } }
+.rec-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; background: var(--bg-1);
+  display: flex; flex-direction: column; gap: 8px; transition: var(--transition); }
+.rec-card:hover { border-color: var(--accent-border); box-shadow: var(--shadow); }
+.rec-name { font-weight: 700; font-size: 16px; }
+.rec-reason { font-size: 13px; color: var(--text-2); line-height: 1.45; flex: 1; }
+.rec-meta { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+
+/* Recent progress */
+.forge-recent { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
+.recent-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; background: var(--bg-1); }
+.recent-delta { font-family: var(--font-mono); font-size: 15px; font-weight: 600; }
+
+/* ---- Refresh session (focused) ---- */
+.forge-session { max-width: 780px; margin: 0 auto; }
+.sess-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.sess-kicker { font-size: 12px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent-ink); font-weight: 700; }
+.sess-timer { font-family: var(--font-mono); font-size: 14px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.sess-skill { font-family: var(--font-display); font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+.sess-progress-line { font-size: 13px; color: var(--text-3); margin-bottom: 18px; }
+
+.sess-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-1); padding: 24px; box-shadow: var(--shadow-sm); }
+.sess-badge { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 3px 9px; border-radius: 100px; background: var(--accent-soft); color: var(--accent-ink); margin-bottom: 12px; }
+.sess-concept { font-size: 15px; line-height: 1.6; color: var(--text); margin-bottom: 16px; white-space: pre-wrap; }
+.sess-example { font-family: var(--font-mono); font-size: 13px; background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px; white-space: pre-wrap; overflow-x: auto; }
+.sess-prompt { font-size: 16px; font-weight: 600; line-height: 1.5; margin: 8px 0 14px; }
+.sess-textarea { width: 100%; min-height: 120px; resize: vertical; padding: 14px; border-radius: var(--radius);
+  border: 1px solid var(--border-2); background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
+.sess-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.sess-actions { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.sess-hint-box { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius); background: var(--accent-softer);
+  border: 1px solid var(--accent-border); font-size: 14px; line-height: 1.5; }
+
+/* Feedback after answering */
+.sess-feedback { border-radius: var(--radius); padding: 16px; margin-top: 8px; border: 1px solid var(--border); }
+.sess-feedback.good { background: var(--green-soft); border-color: rgba(15,157,107,0.25); }
+.sess-feedback.mid  { background: var(--amber-soft); border-color: rgba(194,121,10,0.25); }
+.sess-mastery-move { font-family: var(--font-mono); font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.sess-mastery-move .arrow { color: var(--text-3); }
+
+/* Diagnostic */
+.diag-q { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-1); padding: 20px; margin-bottom: 14px; }
+.diag-q-idx { font-size: 12px; color: var(--accent-ink); font-weight: 700; margin-bottom: 6px; }
+.diag-q-prompt { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+
+/* Classification / results */
+.class-row { display: grid; grid-template-columns: 160px 1fr 48px; align-items: center; gap: 12px; padding: 8px 0; }
+.narrative-box { border-left: 3px solid var(--accent); padding: 14px 18px; background: var(--accent-softer);
+  border-radius: 0 var(--radius) var(--radius) 0; font-size: 16px; line-height: 1.55; margin: 4px 0 20px; }
+
+/* Completion */
+.done-hero { text-align: center; padding: 20px 0 8px; }
+.done-check { width: 56px; height: 56px; border-radius: 50%; background: var(--green-soft); color: var(--green);
+  display: grid; place-items: center; margin: 0 auto 14px; }
+.done-topic-move { font-family: var(--font-mono); font-size: 30px; font-weight: 700; margin: 6px 0; }
+.done-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px 0; }
+@media (max-width: 640px){ .done-cols { grid-template-columns: 1fr; } .class-row { grid-template-columns: 120px 1fr 40px; } .mem-row{gap:8px} }
+.done-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 10px; }
+.done-pill { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: var(--radius);
+  background: var(--bg-2); font-size: 14px; margin-bottom: 8px; }
+
+.forge-badge-tag { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;
+  padding:4px 10px; border-radius:100px; background: var(--accent-soft); color: var(--accent-ink); }
+
+/* setup */
+.setup-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin: 14px 0; }
+.setup-topic { border:1px solid var(--border); border-radius: var(--radius); padding:14px; cursor:pointer; text-align:left;
+  background: var(--bg-1); transition: var(--transition); }
+.setup-topic:hover { border-color: var(--accent-border); }
+.setup-topic.on { border-color: var(--accent); background: var(--accent-softer); box-shadow: 0 0 0 3px var(--accent-soft); }
+.setup-topic-name { font-weight:700; font-size:15px; }
+.setup-topic-mastery { font-size:12px; color: var(--text-2); margin-top:4px; }
+.chip-row { display:flex; gap:8px; flex-wrap:wrap; }
+.chip { border:1px solid var(--border-2); background: var(--bg-1); border-radius:100px; padding:7px 14px; font-size:13px; cursor:pointer; }
+.chip.on { border-color: var(--accent); background: var(--accent); color:#fff; }
+
+/* ── Interview chat ── */
+.iv-msg { display: flex; flex-direction: column; gap: 4px; max-width: 88%; }
+.iv-interviewer { align-self: flex-start; }
+.iv-candidate { align-self: flex-end; align-items: flex-end; }
+.iv-role { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-3); }
+.iv-bubble { padding: 12px 14px; border-radius: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+.iv-interviewer .iv-bubble { background: var(--bg-2); border: 1px solid var(--border); border-top-left-radius: 4px; }
+.iv-candidate .iv-bubble { background: var(--accent); color: #fff; border-top-right-radius: 4px; }
+
+/* ── Interview: camera + chat layout ── */
+.iv-layout { display: grid; grid-template-columns: 280px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 800px) { .iv-layout { grid-template-columns: 1fr; } }
+.iv-cam-panel { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.iv-cam-frame { position: relative; aspect-ratio: 4/3; background: var(--bg-ink); border-radius: var(--radius-lg);
+  overflow: hidden; border: 1px solid var(--border); }
+.iv-cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.iv-cam-off { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; color: var(--text-3); font-size: 13px; }
+.iv-cam-live { position: absolute; top: 10px; left: 10px; display: inline-flex; align-items: center; gap: 6px;
+  font: 700 10px/1 var(--font-body); letter-spacing: 0.08em; color: #fff; background: rgba(0,0,0,0.45);
+  padding: 4px 8px; border-radius: 100px; }
+.iv-cam-live i { width: 7px; height: 7px; border-radius: 50%; background: #e5484d; animation: ivpulse 1.4s infinite; }
+@keyframes ivpulse { 0%,100% { opacity: 1 } 50% { opacity: 0.35 } }
+.iv-cam-meta { font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; text-transform: capitalize; }
+.iv-cam-note { font-size: 11px; color: var(--text-3); line-height: 1.45; }
+.iv-scroll { max-height: 52vh; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }

@@ -1,0 +1,101 @@
+# Lumintora + Forge — full local stack (dev layout: 4 sibling repos).
+#
+#   docker compose -f docker-compose.forge.yml up --build -d
+#
+# App      → http://localhost:3000
+# API      → http://localhost:8080   (SPA calls this directly; CORS allows :3000)
+# Postgres → internal only (migrations run automatically on backend boot)
+#
+# Stop:        docker compose -f docker-compose.forge.yml down
+# Wipe data:   docker compose -f docker-compose.forge.yml down -v
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lumintora-forge-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lumintora
+      POSTGRES_PASSWORD: lumintora_secret
+      POSTGRES_DB: lumintora
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lumintora"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    networks: [forge-net]
+
+  backend:
+    build:
+      context: ./lumintora-backend
+      dockerfile: services/monolith/Dockerfile
+    container_name: lumintora-forge-api
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USER: lumintora
+      DB_PASSWORD: lumintora_secret
+      DB_NAME: lumintora
+      PORT: "8080"
+      JWT_SECRET: forge_local_dev_secret_change_me
+      CF_AI_URL: https://lumintora-ai.bobbynandigam-official.workers.dev
+      CORS_ORIGINS: http://localhost:3000
+      FRONTEND_URL: http://localhost:3000
+
+      # ── Google Sign-In ──────────────────────────────────────────────
+      # Real OAuth: set these (from Google Cloud Console) in a .env file next to
+      # this compose. When GOOGLE_CLIENT_ID is set, real Google is used and the
+      # demo bypass below is ignored automatically.
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID:-}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET:-}"
+      GOOGLE_REDIRECT_URI: "${GOOGLE_REDIRECT_URI:-http://localhost:8080/api/v1/auth/google/callback}"
+      # Only used when no GOOGLE_CLIENT_ID is set: one-click demo Google login.
+      # MUST be false in production.
+      ALLOW_DEV_GOOGLE: "${ALLOW_DEV_GOOGLE:-true}"
+
+      # ── Email (forgot-password) ─────────────────────────────────────
+      # Option A (recommended) — Resend HTTP API:
+      RESEND_API_KEY: "${RESEND_API_KEY:-}"
+      EMAIL_FROM: "${EMAIL_FROM:-}"
+      # Option B — SMTP (e.g. Gmail app password):
+      SMTP_HOST: "${SMTP_HOST:-}"
+      SMTP_PORT: "${SMTP_PORT:-587}"
+      SMTP_USER: "${SMTP_USER:-}"
+      SMTP_PASS: "${SMTP_PASS:-}"
+      SMTP_FROM: "${SMTP_FROM:-}"
+      # If neither is set, the reset code is returned by the API + shown in the UI.
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    networks: [forge-net]
+
+  frontend:
+    build:
+      context: ./lumintora-frontend
+      dockerfile: Dockerfile
+    container_name: lumintora-forge-web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    networks: [forge-net]
+
+volumes:
+  pgdata:
+
+networks:
+  forge-net:
+    driver: bridge

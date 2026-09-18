@@ -1,0 +1,23 @@
+# Keeps the free Render backend awake by pinging its health endpoint.
+# Render free instances sleep after ~15 min idle; a periodic ping avoids the
+# cold-start delay. GitHub Actions' minimum schedule granularity is 5 minutes.
+name: keep-backend-awake
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:          # allow manual runs
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -s -m 60 -o /dev/null -w "%{http_code}" https://lumintora-api.onrender.com/health || true)
+            echo "attempt $i -> HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 20
+          done
+          echo "health check did not return 200"; exit 0   # never fail the workflow
