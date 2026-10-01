@@ -53,3 +53,5 @@ migrations automatically on startup.
 - **Database → Neon** (serverless Postgres); migrations run on backend boot.
 - **Keep-awake:** `.github/workflows/keepalive.yml` pings `/health` every 5 min
   so the free backend doesn't cold-start.
+
+<!-- automation webhook test 2026-10-01T02:45:15Z -->
